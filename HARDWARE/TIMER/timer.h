@@ -23,9 +23,9 @@ extern u16 Global_key_num;
 
 extern u16 Global_press_time;
 
-extern double Global_lcd_x;
+extern int Global_lcd_x;
 
-extern double Global_lcd_y;
+extern int Global_lcd_y;
 
 extern u16 Global_flag;
 
