@@ -18,11 +18,8 @@
 	LED_Init();		  		//初始化与LED连接的硬件接口
  	LCD_Init();
 	KEY_Init();
-	 
 	POINT_COLOR=RED; 
 	sprintf((char*)lcd_id,"LCD ID:%04X",lcddev.id);//将LCD ID打印到lcd_id数组。	
-	 
-	
 	delay_init();	    	 //延时函数初始化
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);// 设置中断优先级分组2
 	TIM3_Int_Init(99,7199);//10Khz的计数频率，计数到5000为500ms  	 
@@ -67,8 +64,8 @@
 				}
 			}
 
-		LCD_DrawPoint(Global_lcd_x,Global_lcd_y);
-		LCD_DrawPoint(Global_lcd_x,Global_lcd_y+60);
-		LCD_DrawPoint(Global_lcd_x,Global_lcd_y+120);
+		LCD_DrawPoint(Global_lcd_x,Global_lcd_y+30);
+		LCD_DrawPoint(Global_lcd_x,Global_lcd_y+80);
+		LCD_DrawPoint(Global_lcd_x,Global_lcd_y+130);
 	}
 }

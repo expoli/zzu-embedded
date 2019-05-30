@@ -1,6 +1,8 @@
 #include "timer.h"
 #include "led.h"
 #include "key.h"
+
+#include "math.h"
 //////////////////////////////////////////////////////////////////////////////////	 
 //本程序只供学习使用，未经作者许可，不得用于其它任何用途
 //Mini STM32开发板
@@ -19,12 +21,14 @@ u16 Global_delay_time = 5000; //延时时间
 u16 Global_key_num = 0;		 //按键
 u16 Global_press_time = 0;   //按键时间
 u16 last_press = 0;			 //长按控制变量
-u16 Global_lcd_x = 0;		 //LCDX轴变量
-u16 Global_lcd_y = 0;		 //LCDY轴变量
+double Global_lcd_x = 0;		 //LCDX轴变量
+double Global_lcd_y = 0;		 //LCDY轴变量
 u16 Global_flag = 0;
 u16 time = 0;
+u16 count = 0;
 int xdir = 1;				 //递增控制器
 int ydir = 1;				 //
+double temp = 0;
 
 //通用定时器中断初始化
 //这里时钟选择为APB1的2倍，而APB1为36M
@@ -59,6 +63,10 @@ void TIM3_Int_Init(u16 arr,u16 psc)
 							 
 }
 
+void triangle_wave(void);
+void square_wave(void);
+void sin_wave(void);
+
 void TIM3_IRQHandler(void)   //TIM3中断
 {
 	if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) //检查指定的TIM中断发生与否:TIM 中断源 
@@ -78,38 +86,137 @@ void TIM3_IRQHandler(void)   //TIM3中断
 			{
 				Global_press_time ++;
 			}
-/////////////////////////////////////			
-			if(time%(Global_delay_time/100)==0)//100为100ms  	 
-			{
-					if (Global_lcd_x == 0)
-						xdir = 1;
-					if (Global_lcd_x >= 240)
-					{
-						Global_lcd_x = 0;
-						Global_lcd_y = 0;
-					}
-
-					if (Global_lcd_y == 0)
-						ydir = 1;
-					if (Global_lcd_y >= 50)
-						ydir = -1;
-					
-					//if (Global_flag)
-					//{
-						Global_lcd_x = Global_lcd_x + xdir; //
-						Global_lcd_y = Global_lcd_y + ydir; //
-					//}
-					printf("%d,%d,%d,%d",Global_lcd_x,Global_lcd_y,Global_press_time,Global_delay_time);
-					printf("\r\n");
-			}
-//			printf("%d",time);
-//			printf("\r\n");
+			sin_wave();
 
 		}
 }
+// 三角波
+void triangle_wave(void)
+{
+	/////////////////////////////////////			
+	if(time%(Global_delay_time/100)==0)//100为100ms  	 
+	{
+		if (Global_lcd_x == 0)
+			xdir = 1;
+		if (Global_lcd_x >= 240)
+		{
+			Global_lcd_x = 0;
+			Global_lcd_y = 0;
+		}
 
+		if (Global_lcd_y == 0)
+			ydir = 1;
+		if (Global_lcd_y >= 50)
+			ydir = -1;
+		
+		Global_lcd_x = Global_lcd_x + xdir; //
+		Global_lcd_y = Global_lcd_y + ydir; //
 
+		printf("%d,%d,%d,%d",Global_lcd_x,Global_lcd_y,Global_press_time,Global_delay_time);
+		printf("\r\n");
+	}
+}
+// 方波
+void square_wave(void)
+{
+	/////////////////////////////////////			
+	if(time%(Global_delay_time/100)==0)//100为100ms  	 
+	{
+		count ++;
+		// 第一条横线
+		if (count <= 50)
+		{
+			xdir = 1;
+			ydir = 0;
+		}
+		// 第一条竖线
+		if (count > 50 && count <=100)
+		{
+			xdir = 0;
+			ydir = 1;
+		}
+		// 第二条横线
+		if (count > 100 && count <=150)
+		{
+			xdir = 1;
+			ydir = 0;
+		}
+		// 第2条竖线
+		if (count > 150 && count <=200)
+		{
+			xdir = 0;
+			ydir = -1;
+		}
+		// 第3条横线
+		if (count > 200 && count <=250)
+		{
+			xdir = 1;
+			ydir = 0;
+		}
+		// 第3条竖线
+		if (count > 250 && count <=300)
+		{
+			xdir = 0;
+			ydir = 1;
+		}
+		// 第4条横线
+		if (count > 300 && count <=350)
+		{
+			xdir = 1;
+			ydir = 0;
+		}
+		// 第4条竖线
+		if (count > 350 && count <=400)
+		{
+			xdir = 0;
+			ydir = -1;
+		}
+		// 第5条横线
+		if (count > 400 && count <=450)
+		{
+			xdir = 1;
+			ydir = 0;
+		}
+		// 定范围
+		if (Global_lcd_x >= 240)
+		{
+			Global_lcd_x = 0;
+			Global_lcd_y = 0;
+			count = 0;
+		}
+		Global_lcd_x = Global_lcd_x + xdir; //
+		Global_lcd_y = Global_lcd_y + ydir; //
 
+		printf("%d,%d,%d,%d",Global_lcd_x,Global_lcd_y,Global_press_time,Global_delay_time);
+		printf("\r\n");
+	}
+}
+
+// 正弦波
+
+void sin_wave(void)
+{
+	/////////////////////////////////////			
+	if(time%(Global_delay_time/100)==0)//100为100ms  	 
+	{
+		if (Global_lcd_x == 0)
+			xdir = 1;
+		if (Global_lcd_x >= 240)
+		{
+			Global_lcd_x = 0;
+			Global_lcd_y = 0;
+		}
+		
+		Global_lcd_x = Global_lcd_x + xdir; //
+		temp = Global_lcd_x;
+		if((int)temp%2==0)Global_lcd_y = 30*sin(3*temp); //
+		else Global_lcd_y = -30*sin(3*temp);
+		Global_lcd_y = (int)Global_lcd_y;
+
+		printf("%f,%f,%d,%d",Global_lcd_x,Global_lcd_y,Global_press_time,Global_delay_time);
+		printf("\r\n");
+	}
+}
 
 
 
