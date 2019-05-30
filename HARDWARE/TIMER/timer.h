@@ -27,4 +27,6 @@ extern u16 Global_lcd_x;
 
 extern u16 Global_lcd_y;
 
+extern u16 Global_flag;
+
 #endif
