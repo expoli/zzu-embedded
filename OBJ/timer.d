@@ -32,3 +32,6 @@
 ..\obj\timer.o: ..\STM32F10x_FWLib\inc\misc.h
 ..\obj\timer.o: ..\HARDWARE\LED\led.h
 ..\obj\timer.o: ..\HARDWARE\KEY\key.h
+..\obj\timer.o: ..\HARDWARE\LCD\lcd.h
+..\obj\timer.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+..\obj\timer.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
